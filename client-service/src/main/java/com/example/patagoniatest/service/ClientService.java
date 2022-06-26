@@ -1,23 +1,23 @@
 package com.example.patagoniatest.service;
 
-import com.example.patagoniatest.model.Client;
+import com.example.patagoniatest.entity.Client;
+import com.example.patagoniatest.feignclients.LoanFeignClient;
+import com.example.patagoniatest.model.Loan;
 import com.example.patagoniatest.repository.ClientRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ClientService {
 
-    private final ClientRepository clientRepository;
+    @Autowired
+    ClientRepository clientRepository;
 
     @Autowired
-    public ClientService(ClientRepository clientRepository) {
-        this.clientRepository = clientRepository;
-    }
+    LoanFeignClient loanFeignClient;
 
     public List<Client> getClients() {
         return clientRepository.findAll();
@@ -28,28 +28,32 @@ public class ClientService {
     }
 
     public void deleteClient(Long id) {
-        clientRepository.deleteById(id);
+        Client client = clientRepository.findById(id).orElseThrow(() -> new IllegalStateException("No existe prestamo "));
+        clientRepository.delete(client);
     }
 
     @Transactional
     public void update(Long id, Client client) throws IllegalStateException {
         Client client1 = new Client();
         client1.setId(id);
-        if (client1==null)
+        if (client1 == null)
             throw new IllegalStateException("El cliente no existe");
         if (!client1.getIncome().equals(client.getIncome()))
-        client1.setIncome(client.getIncome());
+            client1.setIncome(client.getIncome());
         if (!client1.getFullName().equals(client.getFullName()))
-        client1.setFullName(client.getFullName());
+            client1.setFullName(client.getFullName());
         clientRepository.save(client1);
 
     }
 
     public Client findById(Long id) throws Exception {
-        Optional<Client> optClient = clientRepository.findById(id);
-        Client client = optClient.get();
-        if (optClient.isEmpty())
-        new Exception("No existe Cliente");
-        return client;
+        return clientRepository.findById(id).orElseThrow(() -> new Exception("No existe " + id));
+    }
+
+    public Loan saveLoan(Long clientId, Loan loan) throws Exception {
+        Client client = clientRepository.findById(clientId).orElseThrow(() -> new Exception("No existe cliente " + clientId));
+        if (client != null)
+            loan.setClientId(clientId);
+        return loanFeignClient.saveLoan(loan);
     }
 }
