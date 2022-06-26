@@ -28,7 +28,7 @@ public class LoanController {
         return loanService.findById(id);
     }
 
-    @PostMapping("/addLoan")
+    @PostMapping()
     public Loan saveLoan(@RequestBody Loan loan) {
         return loanService.saveLoan(loan);
     }

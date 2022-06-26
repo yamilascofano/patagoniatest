@@ -50,6 +50,7 @@ public class ClientService {
         return clientRepository.findById(id).orElseThrow(() -> new Exception("No existe " + id));
     }
 
+
     public Loan saveLoan(Long clientId, Loan loan) throws Exception {
         Client client = clientRepository.findById(clientId).orElseThrow(() -> new Exception("No existe cliente " + clientId));
         if (client != null)

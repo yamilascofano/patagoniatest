@@ -9,9 +9,10 @@ spring:
    config:
      server:
        git:
-         default-label: master
+         default-label: main
          uri: https://github.com/yamilascofano/patagoniatest
-           search-paths: config-data
+         search-paths:
+           - config-data
 
 
 
