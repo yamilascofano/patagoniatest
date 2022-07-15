@@ -48,4 +48,10 @@ public class StudentController {
     public Subject saveStudent(@PathVariable("studentId") Long studentId, @RequestBody Subject subject) throws Exception {
         return studentService.saveSubject(studentId, subject);
     }
+
+    @GetMapping("/getSubject/{studentId}")
+    public List<Subject> getSubject(@PathVariable("studentId") Long studentId) {
+        return studentService.getSubjects(studentId);
+    }
+
 }

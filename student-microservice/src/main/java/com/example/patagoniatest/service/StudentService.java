@@ -1,7 +1,7 @@
 package com.example.patagoniatest.service;
 
 import com.example.patagoniatest.entity.Student;
-import com.example.patagoniatest.feignclients.StudentFeignStudent;
+import com.example.patagoniatest.feignclients.SubjectFeignClient;
 import com.example.patagoniatest.model.Subject;
 import com.example.patagoniatest.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ public class StudentService {
     StudentRepository studentRepository;
 
     @Autowired
-    StudentFeignStudent studentFeignStudent;
+    SubjectFeignClient subjectFeignClient;
 
     public List<Student> getStudents() {
         return studentRepository.findAll();
@@ -55,6 +55,9 @@ public class StudentService {
         Student student = studentRepository.findById(studentId).orElseThrow(() -> new Exception("No existe estudiante " + studentId));
         if (student != null)
             subject.setStudentId(studentId);
-        return studentFeignStudent.saveSubject(subject);
+        return subjectFeignClient.saveSubject(subject);
+    }
+    public List<Subject> getSubjects(Long studentId){
+        return (List<Subject>) subjectFeignClient.finByStudentId(studentId).getBody();
     }
 }
