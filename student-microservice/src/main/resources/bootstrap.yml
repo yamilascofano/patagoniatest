@@ -1,8 +1,8 @@
 spring:
   application:
-    name: eureka-microservice
+    name: student-microservice
+
   cloud:
     config:
       enabled: true
       uri: http://localhost:8081
-
